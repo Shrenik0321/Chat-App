@@ -1,14 +1,7 @@
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
-  const navigate = useNavigate();
-
-  async function handleSignIn() {
-    navigate("/sign-up");
-  }
-
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
