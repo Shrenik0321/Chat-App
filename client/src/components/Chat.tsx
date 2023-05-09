@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Searchbar from "./Searchbar";
 import Divider from "@mui/material/Divider";
+import { Typography } from "@mui/material";
 
 const drawerWidth = 300;
 
@@ -47,56 +48,55 @@ const Chat = ({ open }: any) => {
         sx={{
           margin: "2%",
           height: "100%",
-          justifyContent: "space-between",
           overflow: "auto",
           paddingTop: "2%",
         }}
       >
-        <Stack
+        <Box
           sx={{
-            overflow: "auto",
-            "-ms-overflow-style": "none",
-            "&::-webkit-scrollbar": {
-              display: "none",
+            position: "relative",
+            padding: "10px",
+            marginY: "10px",
+            backgroundColor: "#27272a",
+            width: "fit-content",
+            maxWidth: "70%",
+            borderRadius: "10px",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: "50%",
+              right: "-20px",
+              border: "10px solid transparent",
+              borderLeftColor: "#2E2E2E",
+              transform: "translateY(-50%)",
             },
           }}
         >
-          <Box>
-            <Box sx={{ padding: "10px" }}>
-              <h1>Chat</h1>
-            </Box>
-            <Divider sx={{ backgroundColor: "#3C3C3C" }} />
-            <Box
-              sx={{
-                padding: "10px",
-                marginY: "10px",
-                backgroundColor: "#2E2E2E",
-                textAlign: "right",
-              }}
-            >
-              <h1>Chat</h1>
-              <p>Hello worlddd</p>
-            </Box>
-            <Divider sx={{ backgroundColor: "#3C3C3C" }} />
-            <Box sx={{ padding: "10px", marginY: "10px" }}>
-              <h1>Chat</h1>
-            </Box>
-            <Divider sx={{ backgroundColor: "#3C3C3C" }} />
-            <Box
-              sx={{
-                padding: "10px",
-                marginY: "10px",
-                backgroundColor: "#2E2E2E",
-                textAlign: "right",
-              }}
-            >
-              <h1>Chat</h1>
-            </Box>
-          </Box>
-        </Stack>
-        <Stack>
-          <Searchbar />
-        </Stack>
+          <Typography>Chat: 1</Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            padding: "10px",
+            marginY: "10px",
+            backgroundColor: "#2563eb",
+            width: "fit-content",
+            maxWidth: "70%",
+            borderRadius: "10px",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: "50%",
+              right: "-20px",
+              border: "10px solid transparent",
+              borderLeftColor: "#2563eb",
+              transform: "translateY(-50%)",
+            },
+          }}
+        >
+          <Typography>Chat: 2 HHElsdfdjsdfhjdjsdfjdjddjdjj</Typography>
+        </Box>
       </Stack>
     </AppBar>
   );

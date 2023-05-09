@@ -9,9 +9,9 @@ export default function Home() {
 
   return (
     <Box sx={{ height: "100vh", backgroundColor: "#242424" }}>
-      <Chat open={open} setOpen={setOpen} />
       <Topbar open={open} setOpen={setOpen} />
       <Sidebar open={open} setOpen={setOpen} />
+      <Chat open={open} setOpen={setOpen} />
     </Box>
   );
 }
