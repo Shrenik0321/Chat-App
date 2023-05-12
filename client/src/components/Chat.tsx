@@ -1,10 +1,18 @@
+import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Searchbar from "./Searchbar";
-import Divider from "@mui/material/Divider";
+import Textbar from "./Textbar";
 import { Typography } from "@mui/material";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { auth, db } from "../firebase-config/firebase";
 
 const drawerWidth = 300;
 
@@ -31,6 +39,24 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Chat = ({ open }: any) => {
+  const [newMessage, setNewMessage] = useState<string>("");
+
+  const messagesRef = collection(db, "Messages");
+
+  useEffect(() => {
+    const handleSubmit = async () => {
+      if (newMessage != "") {
+        await addDoc(messagesRef, {
+          text: newMessage,
+          createdAt: serverTimestamp(),
+          user: auth.currentUser?.displayName,
+        });
+      }
+      setNewMessage("");
+    };
+    handleSubmit();
+  }, [newMessage]);
+
   return (
     <AppBar
       open={open}
@@ -38,18 +64,21 @@ const Chat = ({ open }: any) => {
         backgroundColor: "#242424",
         color: "white",
         position: "fixed",
-        top: "7%",
+        top: "10%",
         left: 0,
         right: 0,
-        height: "calc(100vh - 7%)",
+        height: "calc(100vh - 11%)",
       }}
     >
       <Stack
         sx={{
-          margin: "2%",
+          marginX: "2%",
           height: "100%",
           overflow: "auto",
           paddingTop: "2%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
       >
         <Box
@@ -57,19 +86,11 @@ const Chat = ({ open }: any) => {
             position: "relative",
             padding: "10px",
             marginY: "10px",
-            backgroundColor: "#27272a",
+            backgroundColor: "#22c55e",
             width: "fit-content",
             maxWidth: "70%",
             borderRadius: "10px",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: "50%",
-              right: "-20px",
-              border: "10px solid transparent",
-              borderLeftColor: "#2E2E2E",
-              transform: "translateY(-50%)",
-            },
+            alignSelf: "flex-start",
           }}
         >
           <Typography>Chat: 1</Typography>
@@ -84,20 +105,28 @@ const Chat = ({ open }: any) => {
             width: "fit-content",
             maxWidth: "70%",
             borderRadius: "10px",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: "50%",
-              right: "-20px",
-              border: "10px solid transparent",
-              borderLeftColor: "#2563eb",
-              transform: "translateY(-50%)",
-            },
+            alignSelf: "flex-end",
           }}
         >
           <Typography>Chat: 2 HHElsdfdjsdfhjdjsdfjdjddjdjj</Typography>
         </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            padding: "10px",
+            marginY: "10px",
+            backgroundColor: "#22c55e",
+            width: "fit-content",
+            maxWidth: "70%",
+            borderRadius: "10px",
+            alignSelf: "flex-start",
+          }}
+        >
+          <Typography>Chat: 3 HELLO WORLD</Typography>
+        </Box>
       </Stack>
+      <Textbar setNewMessage={setNewMessage} />
     </AppBar>
   );
 };

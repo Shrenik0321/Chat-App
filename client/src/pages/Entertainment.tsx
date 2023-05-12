@@ -8,7 +8,7 @@ interface Auth {
   auth: string;
 }
 
-export default function Home() {
+export default function Entertainment() {
   const [open, setOpen] = useState(true);
   const [isAuth, setIsAuth] = useState<Auth | null>();
 
@@ -21,7 +21,9 @@ export default function Home() {
     <Box sx={{ height: "100vh", backgroundColor: "#242424" }}>
       {isAuth && (
         <>
+          <Topbar open={open} setOpen={setOpen} />
           <Sidebar open={open} setOpen={setOpen} />
+          <Chat open={open} setOpen={setOpen} />
         </>
       )}
     </Box>

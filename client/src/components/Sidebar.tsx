@@ -19,6 +19,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import PersonIcon from "@mui/icons-material/Person";
 import TagIcon from "@mui/icons-material/Tag";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 300;
 
@@ -33,6 +34,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function Sidebar({ open, setOpen }: any) {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -159,7 +161,11 @@ export default function Sidebar({ open, setOpen }: any) {
                 </Typography>
                 <List>
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("/technology");
+                      }}
+                    >
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>
@@ -168,7 +174,11 @@ export default function Sidebar({ open, setOpen }: any) {
                   </ListItem>
 
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("/sciences");
+                      }}
+                    >
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>
@@ -177,7 +187,11 @@ export default function Sidebar({ open, setOpen }: any) {
                   </ListItem>
 
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
+                    <ListItemButton
+                      onClick={() => {
+                        navigate("/entertainment");
+                      }}
+                    >
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>

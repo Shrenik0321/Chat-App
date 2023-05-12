@@ -4,6 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useLocation } from "react-router-dom";
 
 const drawerWidth = 300;
 
@@ -33,6 +34,12 @@ const Topbar = ({ open, setOpen }: any) => {
     setOpen(true);
   };
 
+  const { pathname } = useLocation();
+  const pathName = new URL(
+    pathname,
+    "http://localhost:5000"
+  ).pathname.substring(1);
+
   return (
     <AppBar
       position="fixed"
@@ -53,7 +60,7 @@ const Topbar = ({ open, setOpen }: any) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          Messenger
+          {pathName != "home" ? pathName : "messenger"}
         </Typography>
       </Toolbar>
     </AppBar>

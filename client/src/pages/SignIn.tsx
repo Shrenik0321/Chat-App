@@ -9,10 +9,19 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Card } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { auth, provider } from "../firebase-config/firebase";
+import { signInWithPopup } from "firebase/auth";
+
 export default function SignIn() {
   const navigate = useNavigate();
 
   async function handleSignIn() {
+    navigate("/home");
+  }
+
+  async function handleSignInWithGoogle() {
+    const result = await signInWithPopup(auth, provider);
+    localStorage.setItem("auth-token", result.user.refreshToken);
     navigate("/home");
   }
 
@@ -81,6 +90,14 @@ export default function SignIn() {
                 onClick={handleSignIn}
               >
                 Sign In
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mb: 2 }}
+                onClick={handleSignInWithGoogle}
+              >
+                Sign In with Google
               </Button>
               <Grid container>
                 <Grid item xs>

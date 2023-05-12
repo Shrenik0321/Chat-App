@@ -1,7 +1,15 @@
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 
-const Searchbar = () => {
+const Textbar = ({ setNewMessage }: any) => {
+  const [message, setMessage] = useState("");
+
+  function handleSendMessage() {
+    setNewMessage(message);
+    setMessage("");
+  }
+
   return (
     <>
       <TextField
@@ -30,6 +38,7 @@ const Searchbar = () => {
           "& .MuiInputBase-input": {
             color: "white",
           },
+          marginX: "1%",
         }}
         InputProps={{
           endAdornment: (
@@ -40,12 +49,17 @@ const Searchbar = () => {
                   cursor: "pointer",
                 },
               }}
+              onClick={handleSendMessage}
             />
           ),
+        }}
+        value={message}
+        onChange={(e) => {
+          setMessage(e.target.value);
         }}
       />
     </>
   );
 };
 
-export default Searchbar;
+export default Textbar;
