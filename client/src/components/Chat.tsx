@@ -5,13 +5,7 @@ import Stack from "@mui/material/Stack";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Textbar from "./Textbar";
 import { Typography } from "@mui/material";
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase-config/firebase";
 
 const drawerWidth = 300;
@@ -40,7 +34,6 @@ const AppBar = styled(MuiAppBar, {
 
 const Chat = ({ open }: any) => {
   const [newMessage, setNewMessage] = useState<string>("");
-
   const messagesRef = collection(db, "Messages");
 
   useEffect(() => {
@@ -49,6 +42,7 @@ const Chat = ({ open }: any) => {
         await addDoc(messagesRef, {
           text: newMessage,
           createdAt: serverTimestamp(),
+          userId: auth.currentUser?.uid,
           user: auth.currentUser?.displayName,
         });
       }

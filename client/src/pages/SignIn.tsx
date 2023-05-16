@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -9,11 +10,14 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Card } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { auth, provider } from "../firebase-config/firebase";
+import { auth, db, provider } from "../firebase-config/firebase";
 import { signInWithPopup } from "firebase/auth";
+import { AuthContext } from "../context/AuthContext";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const { setCurrentUser } = useContext(AuthContext);
 
   async function handleSignIn() {
     navigate("/home");
@@ -21,7 +25,12 @@ export default function SignIn() {
 
   async function handleSignInWithGoogle() {
     const result = await signInWithPopup(auth, provider);
-    localStorage.setItem("auth-token", result.user.refreshToken);
+    setCurrentUser(result.user);
+    await setDoc(doc(db, "Users", result.user.uid), {
+      displayName: result.user.displayName,
+      email: result.user.email,
+      uid: result.user.uid,
+    });
     navigate("/home");
   }
 

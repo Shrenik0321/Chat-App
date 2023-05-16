@@ -1,26 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import Chat from "../components/Chat";
 import Box from "@mui/material/Box";
 import Topbar from "../components/Topbar";
-
-interface Auth {
-  auth: string;
-}
+import { AuthContext } from "../context/AuthContext";
+import Chat from "../components/Chat";
+import { useLocation } from "react-router";
 
 export default function Home() {
   const [open, setOpen] = useState(true);
-  const [isAuth, setIsAuth] = useState<Auth | null>();
+  const { currentUser } = useContext(AuthContext);
+  const [messageUser, setMessageUser] = useState([]);
+  const location = useLocation();
+  const data = location.state;
 
   useEffect(() => {
-    const auth = localStorage.getItem("auth-token");
-    setIsAuth(auth ? { auth } : null);
-  }, []);
+    setMessageUser(data);
+  }, [data]);
 
   return (
     <Box sx={{ height: "100vh", backgroundColor: "#242424" }}>
-      {isAuth && (
+      {currentUser && messageUser != null ? (
         <>
+          <Topbar open={open} setOpen={setOpen} messageUser={messageUser} />
+          <Sidebar open={open} setOpen={setOpen} />
+          <Chat open={open} setOpen={setOpen} />
+        </>
+      ) : (
+        <>
+          <Topbar open={open} setOpen={setOpen} messageUser={messageUser} />
           <Sidebar open={open} setOpen={setOpen} />
         </>
       )}

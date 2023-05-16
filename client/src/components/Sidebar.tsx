@@ -1,3 +1,4 @@
+import { useEffect, useState, useContext } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -19,7 +20,19 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import PersonIcon from "@mui/icons-material/Person";
 import TagIcon from "@mui/icons-material/Tag";
-import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth, db } from "../firebase-config/firebase";
+import { useNavigate } from "react-router";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 const drawerWidth = 300;
 
@@ -35,10 +48,36 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function Sidebar({ open, setOpen }: any) {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
+  const [userResult, setUserResult] = useState<any>([]);
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  function handleLogout() {
+    navigate("/");
+    return signOut(auth);
+  }
+
+  useEffect(() => {
+    const func = async () => {
+      let list: any[] = [];
+      const q = query(collection(db, "Users"));
+      try {
+        const querySnapshot = await getDocs(collection(db, "Users"));
+        querySnapshot.forEach((doc) => {
+          list.push(doc.data());
+        });
+        setUserResult(list);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    return () => {
+      func();
+    };
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -73,7 +112,7 @@ export default function Sidebar({ open, setOpen }: any) {
             <List>
               {["All mail", "Trash"].map((text, index) => (
                 <ListItem key={text} disablePadding>
-                  <ListItemButton>
+                  <ListItemButton onClick={handleLogout}>
                     <ListItemIcon>
                       {index % 2 === 0 ? (
                         <SmartToyIcon sx={{ color: "white" }} />
@@ -161,11 +200,7 @@ export default function Sidebar({ open, setOpen }: any) {
                 </Typography>
                 <List>
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton
-                      onClick={() => {
-                        navigate("/technology");
-                      }}
-                    >
+                    <ListItemButton>
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>
@@ -174,11 +209,7 @@ export default function Sidebar({ open, setOpen }: any) {
                   </ListItem>
 
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton
-                      onClick={() => {
-                        navigate("/sciences");
-                      }}
-                    >
+                    <ListItemButton>
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>
@@ -187,11 +218,7 @@ export default function Sidebar({ open, setOpen }: any) {
                   </ListItem>
 
                   <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton
-                      onClick={() => {
-                        navigate("/entertainment");
-                      }}
-                    >
+                    <ListItemButton>
                       <ListItemIcon>
                         <TagIcon />{" "}
                       </ListItemIcon>
@@ -206,32 +233,20 @@ export default function Sidebar({ open, setOpen }: any) {
                   <h3>#Direct Messages</h3>
                 </Typography>
                 <List>
-                  <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <PersonIcon />{" "}
-                      </ListItemIcon>
-                      <ListItemText>Michael Jackson</ListItemText>
-                    </ListItemButton>
-                  </ListItem>
-
-                  <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <PersonIcon />{" "}
-                      </ListItemIcon>
-                      <ListItemText>Shakira</ListItemText>
-                    </ListItemButton>
-                  </ListItem>
-
-                  <ListItem sx={{ padding: "0px" }}>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <PersonIcon />{" "}
-                      </ListItemIcon>
-                      <ListItemText>Lemony Snicket</ListItemText>
-                    </ListItemButton>
-                  </ListItem>
+                  {userResult.map((data: any) => (
+                    <ListItem sx={{ padding: "0px" }}>
+                      <ListItemButton
+                        onClick={() => {
+                          navigate(`/${data.displayName}`, { state: data });
+                        }}
+                      >
+                        <ListItemIcon>
+                          <PersonIcon />
+                        </ListItemIcon>
+                        <ListItemText>{data.displayName}</ListItemText>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
                 </List>
               </Box>
             </Stack>

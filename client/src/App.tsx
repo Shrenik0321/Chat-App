@@ -2,9 +2,6 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
-import Technology from "./pages/Technology";
-import Sciences from "./pages/Sciences";
-import Entertainment from "./pages/Entertainment";
 
 function App() {
   const Layout = () => {
@@ -35,16 +32,8 @@ function App() {
       element: <Home />,
     },
     {
-      path: "/technology",
-      element: <Technology />,
-    },
-    {
-      path: "/sciences",
-      element: <Sciences />,
-    },
-    {
-      path: "/entertainment",
-      element: <Entertainment />,
+      path: "/:user",
+      element: <Home />,
     },
   ]);
 
