@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -23,16 +23,7 @@ import TagIcon from "@mui/icons-material/Tag";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../firebase-config/firebase";
 import { useNavigate } from "react-router";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
-import { AuthContext } from "../context/AuthContext";
+import { collection, getDocs } from "firebase/firestore";
 
 const drawerWidth = 300;
 
@@ -48,7 +39,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function Sidebar({ open, setOpen }: any) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { currentUser } = useContext(AuthContext);
   const [userResult, setUserResult] = useState<any>([]);
 
   const handleDrawerClose = () => {
@@ -63,7 +53,6 @@ export default function Sidebar({ open, setOpen }: any) {
   useEffect(() => {
     const func = async () => {
       let list: any[] = [];
-      const q = query(collection(db, "Users"));
       try {
         const querySnapshot = await getDocs(collection(db, "Users"));
         querySnapshot.forEach((doc) => {
@@ -143,7 +132,11 @@ export default function Sidebar({ open, setOpen }: any) {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>
+                  <Typography
+                    onClick={() => {
+                      navigate("/home");
+                    }}
+                  >
                     <h3>Messenger</h3>
                   </Typography>
                 </Stack>
