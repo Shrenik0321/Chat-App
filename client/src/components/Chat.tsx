@@ -76,7 +76,7 @@ const Chat = ({ open }: any) => {
     try {
       const res = await getDoc(doc(db, "Chats", combinedId));
       if (!res.exists()) {
-        const newRes = await setDoc(doc(db, "Chats", combinedId), {
+        await setDoc(doc(db, "Chats", combinedId), {
           messages: [],
         });
       } else {
