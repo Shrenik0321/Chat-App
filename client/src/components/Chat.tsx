@@ -56,7 +56,7 @@ const Chat = ({ open }: any) => {
     if (docSnap.exists()) {
       const existingData = docSnap.data();
       const existingMessages = existingData.messages || [];
-      const newChatObj = { [currentUser.uid]: text };
+      const newChatObj = { [currentUser ? currentUser.uid : ""]: text };
       const updatedMessages = [...existingMessages, newChatObj];
       await updateDoc(docRef, { messages: updatedMessages });
     } else {
@@ -145,7 +145,9 @@ const Chat = ({ open }: any) => {
                 <Typography>{Object.values(data)}</Typography>
               </Box>
             );
-          } else if (Object.keys(data).includes(currentUser.uid)) {
+          } else if (
+            Object.keys(data).includes(currentUser ? currentUser.uid : "")
+          ) {
             return (
               <Box
                 key={key}
