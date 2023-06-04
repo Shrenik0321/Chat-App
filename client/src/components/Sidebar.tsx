@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -24,6 +24,7 @@ import { signOut } from "firebase/auth";
 import { auth, db } from "../firebase-config/firebase";
 import { useNavigate } from "react-router";
 import { collection, getDocs } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 const drawerWidth = 300;
 
@@ -40,6 +41,7 @@ export default function Sidebar({ open, setOpen }: any) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [userResult, setUserResult] = useState<any>([]);
+  const { currentUser } = useContext(AuthContext);
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -56,7 +58,9 @@ export default function Sidebar({ open, setOpen }: any) {
       try {
         const querySnapshot = await getDocs(collection(db, "Users"));
         querySnapshot.forEach((doc) => {
-          list.push(doc.data());
+          if (doc.data().uid != currentUser.uid) {
+            list.push(doc.data());
+          }
         });
         setUserResult(list);
       } catch (err) {

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -28,7 +29,24 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Topbar = ({ open, setOpen, messageUser }: any) => {
+const Topbar = ({ open, setOpen }: any) => {
+  const [messageUser, setMessageUser] = useState("");
+  const currentUrl = window.location.href;
+
+  function getUri(currentUrl: string) {
+    const url = new URL(currentUrl);
+    const lastSegment: any = url.pathname
+      .split("/")
+      .filter((segment) => segment !== "")
+      .pop();
+    const decodedSegment = decodeURIComponent(lastSegment.replace(/%20/g, " "));
+    return decodedSegment;
+  }
+
+  useEffect(() => {
+    setMessageUser(getUri(currentUrl));
+  }, [currentUrl]);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -53,11 +71,7 @@ const Topbar = ({ open, setOpen, messageUser }: any) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          {messageUser
-            ? messageUser.displayName
-              ? messageUser.displayName
-              : "messenger"
-            : "messenger"}
+          {messageUser}
         </Typography>
       </Toolbar>
     </AppBar>

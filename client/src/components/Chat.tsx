@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import {
   doc,
+  setDoc,
   getDoc,
   updateDoc,
   onSnapshot,
@@ -15,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase-config/firebase";
 import { ChatContext } from "../context/ChatContext";
+import { AuthContext } from "../context/AuthContext";
 
 const drawerWidth = 300;
 
@@ -41,46 +43,64 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Chat = ({ open }: any) => {
-  const { messagingUser, user, combinedIdUser } = useContext(ChatContext);
-  const [newMessage, setNewMessage] = useState<string>("");
-  const [chatReturn, setChatReturn] = useState<any[]>([]);
+  const { currentUser } = useContext(AuthContext);
+  const { messagingUser } = useContext(ChatContext);
+  const [combinedid, setCombinedid] = useState("");
+  const [text, setText] = useState("");
+  const [chatReturn, setChatReturn] = useState([]);
 
-  const handleSubmit = async () => {
-    const docRef = doc(collection(db, "Chats"), combinedIdUser);
+  async function handleSend() {
+    const docRef = doc(collection(db, "Chats"), combinedid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       const existingData = docSnap.data();
       const existingMessages = existingData.messages || [];
-      const newChatObj = { [messagingUser.uid]: newMessage };
+      const newChatObj = { [currentUser.uid]: text };
       const updatedMessages = [...existingMessages, newChatObj];
       await updateDoc(docRef, { messages: updatedMessages });
     } else {
       console.log("Document does not exist");
     }
 
-    setNewMessage("");
-  };
+    setText("");
+  }
 
-  useEffect(() => {
-    let bitch = messagingUser ? messagingUser.uid : "" + user ? user.uid : "";
-    console.log("first", bitch);
-    console.log("sec", messagingUser);
-    console.log("thi", user);
-  }, []);
-
-  useEffect(() => {
-    const getMessages = () => {
-      if (combinedIdUser) {
-        onSnapshot(doc(collection(db, "Chats"), combinedIdUser), (snapshot) => {
-          const updatedMessages = snapshot.data()?.messages || [];
-          setChatReturn(updatedMessages);
+  async function getMessagesFunc() {
+    const combinedId: string =
+      currentUser != null || currentUser != undefined
+        ? currentUser.uid > messagingUser.uid
+          ? currentUser.uid + messagingUser.uid
+          : messagingUser.uid + currentUser.uid
+        : "";
+    try {
+      const res = await getDoc(doc(db, "Chats", combinedId));
+      if (!res.exists()) {
+        const newRes = await setDoc(doc(db, "Chats", combinedId), {
+          messages: [],
         });
+      } else {
+        if (combinedId) {
+          onSnapshot(doc(collection(db, "Chats"), combinedId), (snapshot) => {
+            const updatedMessages = snapshot.data()?.messages || [];
+            console.log(updatedMessages);
+            setChatReturn(updatedMessages);
+          });
+        }
       }
-    };
+      setCombinedid(combinedId);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
-    getMessages();
-  }, [combinedIdUser]);
+  useEffect(() => {
+    async function get() {
+      await getMessagesFunc();
+    }
+
+    get();
+  }, [messagingUser]);
 
   return (
     <AppBar
@@ -115,17 +135,17 @@ const Chat = ({ open }: any) => {
                   position: "relative",
                   padding: "10px",
                   marginY: "10px",
-                  backgroundColor: "#2563eb",
+                  backgroundColor: "#22c55e",
                   width: "fit-content",
                   maxWidth: "70%",
                   borderRadius: "10px",
-                  alignSelf: "flex-end",
+                  alignSelf: "flex-start",
                 }}
               >
                 <Typography>{Object.values(data)}</Typography>
               </Box>
             );
-          } else if (Object.keys(data).includes(user.uid)) {
+          } else if (Object.keys(data).includes(currentUser.uid)) {
             return (
               <Box
                 key={key}
@@ -133,11 +153,11 @@ const Chat = ({ open }: any) => {
                   position: "relative",
                   padding: "10px",
                   marginY: "10px",
-                  backgroundColor: "#22c55e",
+                  backgroundColor: "#2563eb",
                   width: "fit-content",
                   maxWidth: "70%",
                   borderRadius: "10px",
-                  alignSelf: "flex-start",
+                  alignSelf: "flex-end",
                 }}
               >
                 <Typography>{Object.values(data)}</Typography>
@@ -153,6 +173,7 @@ const Chat = ({ open }: any) => {
         minRows={1}
         maxRows={4}
         variant="filled"
+        value={text}
         sx={{
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
@@ -177,20 +198,17 @@ const Chat = ({ open }: any) => {
         InputProps={{
           endAdornment: (
             <SendIcon
-              onClick={handleSubmit}
               sx={{
                 color: "white",
                 "&:hover": {
                   cursor: "pointer",
                 },
               }}
+              onClick={handleSend}
             />
           ),
         }}
-        value={newMessage}
-        onChange={(e) => {
-          setNewMessage(e.target.value);
-        }}
+        onChange={(e) => setText(e.target.value)}
       />
     </AppBar>
   );

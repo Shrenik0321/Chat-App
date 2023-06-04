@@ -1,10 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 interface ChatContextProps {
   setMessagingUser: any;
   messagingUser: any;
-  setUser: any;
-  user: any;
   setCombinedId: any;
   combinedIdUser: any;
 }
@@ -12,15 +10,12 @@ interface ChatContextProps {
 export const ChatContext = createContext<ChatContextProps>({
   setMessagingUser: "",
   messagingUser: "",
-  setUser: "",
-  user: "",
   setCombinedId: "",
   combinedIdUser: "",
 });
 
 export const ChatContextProvider = ({ children }: any) => {
-  const [messagingUser, setMessagingUser] = useState("");
-  const [user, setUser] = useState("");
+  const [messagingUser, setMessagingUser] = useState();
   const [combinedIdUser, setCombinedId] = useState("");
 
   return (
@@ -28,8 +23,6 @@ export const ChatContextProvider = ({ children }: any) => {
       value={{
         setMessagingUser,
         messagingUser,
-        setUser,
-        user,
         setCombinedId,
         combinedIdUser,
       }}
