@@ -5,8 +5,6 @@ import Topbar from "../components/Topbar";
 import { AuthContext } from "../context/AuthContext";
 import Chat from "../components/Chat";
 import { useLocation } from "react-router";
-import { getDoc, setDoc, doc } from "firebase/firestore";
-import { db } from "../firebase-config/firebase";
 import { ChatContext } from "../context/ChatContext";
 // import { PageNotFound } from "./PageNotFound";
 
@@ -27,7 +25,7 @@ export default function Home() {
         <>
           <Topbar open={open} setOpen={setOpen} />
           <Sidebar open={open} setOpen={setOpen} />
-          <Chat open={open} setOpen={setOpen} />
+          {data != null && <Chat open={open} setOpen={setOpen} />}
         </>
       ) : (
         <>{/* <PageNotFound /> */}</>

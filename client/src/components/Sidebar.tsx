@@ -18,13 +18,13 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
-import PersonIcon from "@mui/icons-material/Person";
 import TagIcon from "@mui/icons-material/Tag";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../firebase-config/firebase";
 import { useNavigate } from "react-router";
 import { collection, getDocs } from "firebase/firestore";
 import { AuthContext } from "../context/AuthContext";
+import Avatar from "@mui/material/Avatar";
 
 const drawerWidth = 300;
 
@@ -58,7 +58,7 @@ export default function Sidebar({ open, setOpen }: any) {
       try {
         const querySnapshot = await getDocs(collection(db, "Users"));
         querySnapshot.forEach((doc) => {
-          if (doc.data().uid != currentUser.uid) {
+          if (doc.data().uid != currentUser?.uid) {
             list.push(doc.data());
           }
         });
@@ -103,19 +103,24 @@ export default function Sidebar({ open, setOpen }: any) {
             }}
           >
             <List>
-              {["All mail", "Trash"].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton onClick={handleLogout}>
-                    <ListItemIcon>
-                      {index % 2 === 0 ? (
-                        <SmartToyIcon sx={{ color: "white" }} />
-                      ) : (
-                        <LogoutIcon sx={{ color: "white" }} />
-                      )}
-                    </ListItemIcon>
-                  </ListItemButton>
-                </ListItem>
-              ))}
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    navigate("/chat-ai");
+                  }}
+                >
+                  <ListItemIcon>
+                    <SmartToyIcon sx={{ color: "white" }} />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon sx={{ color: "white" }} />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
             </List>
           </Grid>
           <Grid
@@ -238,7 +243,7 @@ export default function Sidebar({ open, setOpen }: any) {
                         }}
                       >
                         <ListItemIcon>
-                          <PersonIcon />
+                          <Avatar alt={data.displayName} src={data.photoUrl} />
                         </ListItemIcon>
                         <ListItemText>{data.displayName}</ListItemText>
                       </ListItemButton>

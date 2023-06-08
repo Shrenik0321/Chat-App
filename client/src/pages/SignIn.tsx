@@ -30,6 +30,7 @@ export default function SignIn() {
       displayName: result.user.displayName,
       email: result.user.email,
       uid: result.user.uid,
+      photoUrl: result.user.photoURL,
     });
     navigate("/home");
   }

@@ -6,6 +6,8 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import {
   doc,
   setDoc,
@@ -83,7 +85,6 @@ const Chat = ({ open }: any) => {
         if (combinedId) {
           onSnapshot(doc(collection(db, "Chats"), combinedId), (snapshot) => {
             const updatedMessages = snapshot.data()?.messages || [];
-            console.log(updatedMessages);
             setChatReturn(updatedMessages);
           });
         }
@@ -199,15 +200,36 @@ const Chat = ({ open }: any) => {
         }}
         InputProps={{
           endAdornment: (
-            <SendIcon
-              sx={{
-                color: "white",
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}
-              onClick={handleSend}
-            />
+            <>
+              <KeyboardVoiceIcon
+                sx={{
+                  paddingBottom: "5px",
+                  color: "white",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+              />
+              <AttachFileIcon
+                sx={{
+                  paddingBottom: "5px",
+                  color: "white",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+              />
+              <SendIcon
+                sx={{
+                  paddingBottom: "5px",
+                  color: "white",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={handleSend}
+              />
+            </>
           ),
         }}
         onChange={(e) => setText(e.target.value)}
