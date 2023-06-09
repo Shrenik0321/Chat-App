@@ -52,20 +52,22 @@ const Chat = ({ open }: any) => {
   const [chatReturn, setChatReturn] = useState([]);
 
   async function handleSend() {
-    const docRef = doc(collection(db, "Chats"), combinedid);
-    const docSnap = await getDoc(docRef);
+    if (text != "") {
+      const docRef = doc(collection(db, "Chats"), combinedid);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const existingData = docSnap.data();
-      const existingMessages = existingData.messages || [];
-      const newChatObj = { [currentUser ? currentUser.uid : ""]: text };
-      const updatedMessages = [...existingMessages, newChatObj];
-      await updateDoc(docRef, { messages: updatedMessages });
-    } else {
-      console.log("Document does not exist");
+      if (docSnap.exists()) {
+        const existingData = docSnap.data();
+        const existingMessages = existingData.messages || [];
+        const newChatObj = { [currentUser ? currentUser.uid : ""]: text };
+        const updatedMessages = [...existingMessages, newChatObj];
+        await updateDoc(docRef, { messages: updatedMessages });
+      } else {
+        console.log("Document does not exist");
+      }
+
+      setText("");
     }
-
-    setText("");
   }
 
   async function getMessagesFunc() {
@@ -118,9 +120,12 @@ const Chat = ({ open }: any) => {
     >
       <Stack
         sx={{
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
           marginX: "2%",
           height: "100%",
-          overflow: "auto",
           paddingTop: "2%",
           display: "flex",
           flexDirection: "column",
@@ -170,6 +175,9 @@ const Chat = ({ open }: any) => {
         })}
       </Stack>
       <TextField
+        onKeyDown={(e) => {
+          e.key === "Enter" && handleSend();
+        }}
         id="outlined-basic"
         label="Type your message..."
         multiline
